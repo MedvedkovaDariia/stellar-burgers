@@ -10,7 +10,6 @@ export const FeedInfoUI = memo(function FeedInfoUI({
   pendingOrders,
 }: FeedInfoUIProps): React.JSX.Element {
   const { total, totalToday } = feed;
-
   return (
     <section>
       <div className={styles.columns}>
