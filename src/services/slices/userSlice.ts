@@ -54,7 +54,7 @@ export const getUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk('user/logout', async () => {
   await logoutApi();
-  localStorage.removeItem('refreshToken');
+  localStorage.clear();
   deleteCookie('accessToken');
 });
 
@@ -133,9 +133,8 @@ export const userSlice = createSlice({
         state.isLoading = false;
         state.error = null;
       })
-      .addCase(getUser.rejected, (state, action) => {
+      .addCase(getUser.rejected, (state) => {
         state.user = null;
-        state.error = action.payload as string;
         state.isAuth = false;
         state.isLoading = false;
       })

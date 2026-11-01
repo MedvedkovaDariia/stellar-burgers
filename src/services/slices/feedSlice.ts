@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { getFeedsApi } from '../../utils/burger-api';
+import { getFeedsApi, getErrorMessage } from '../../utils/burger-api';
 
 import type { TFeedState } from '../../utils/types';
 
@@ -11,7 +11,7 @@ export const getFeeds = createAsyncThunk(
       const data = await getFeedsApi();
       return data;
     } catch (error: unknown) {
-      return rejectWithValue(error);
+      return rejectWithValue(getErrorMessage(error));
     }
   }
 );
@@ -39,11 +39,11 @@ const feedSlice = createSlice({
 
         if (Array.isArray(action.payload)) {
           state.orders = action.payload;
-        } else if (action.payload && action.payload.orders) {
+        } else if (action.payload?.orders) {
           state.error = null;
           state.orders = action.payload.orders;
-          state.total = action.payload.total;
-          state.totalToday = action.payload.totalToday;
+          state.total = action.payload.total ?? 0;
+          state.totalToday = action.payload.totalToday ?? 0;
         }
       })
       .addCase(getFeeds.rejected, (state, action) => {

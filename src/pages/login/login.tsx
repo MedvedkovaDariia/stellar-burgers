@@ -1,10 +1,9 @@
 import { useDispatch, useSelector } from '@/services/store';
 import { LoginUI } from '@ui-pages';
 import { type SyntheticEvent, useState } from 'react';
-import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import { loginUser, clearError } from '../../services/slices/userSlice';
+import { loginUser } from '../../services/slices/userSlice';
 
 type LocationState = {
   from?: {
@@ -20,10 +19,6 @@ export const Login = (): React.JSX.Element => {
   const state = location.state as LocationState | null;
 
   const { error } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    void dispatch(clearError());
-  }, [dispatch]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

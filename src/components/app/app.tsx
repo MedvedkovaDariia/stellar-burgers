@@ -16,6 +16,11 @@ import { Preloader } from '@ui';
 import { useEffect } from 'react';
 import { useLocation, Routes, Route, useNavigate } from 'react-router-dom';
 
+import {
+  getIngredients,
+  getIngredientsError,
+  getIngredientsLoading,
+} from '../../services/selectors';
 import { getUser } from '../../services/slices/userSlice';
 import { Modal } from '../modal/modal';
 import { ProtectedRoute } from '../protected-route/ProtectedRoute';
@@ -38,9 +43,9 @@ const App = (): React.JSX.Element => {
     void dispatch(getUser());
   }, [dispatch]);
 
-  const { ingredients, isIngredientsLoading, ingredientsError } = useSelector(
-    (state) => state.ingredients
-  );
+  const ingredients = useSelector(getIngredients);
+  const isIngredientsLoading = useSelector(getIngredientsLoading);
+  const ingredientsError = useSelector(getIngredientsError);
 
   return (
     <div className={styles.app}>
@@ -69,7 +74,7 @@ const AppContent = ({
     return (
       <p className={`${styles.message} text text_type_main-medium`}>
         Не удалось загрузить ингредиенты
-        {error.message ? `: ${error.message}` : '.'}
+        {error ? `: ${error}` : '.'}
       </p>
     );
   }
@@ -87,8 +92,12 @@ const RouteComponent = (): React.JSX.Element => {
   const location = useLocation();
   const state = location.state as LocationState | null;
   const background = state?.background;
-
   const navigate = useNavigate();
+
+  const handleCloseModal = (): void => {
+    void navigate(-1);
+  };
+
   return (
     <>
       <Routes location={background ?? location}>
@@ -162,12 +171,7 @@ const RouteComponent = (): React.JSX.Element => {
           <Route
             path="/ingredients/:id"
             element={
-              <Modal
-                title="Детали ингредиента"
-                onClose={() => {
-                  void navigate(-1);
-                }}
-              >
+              <Modal title="Детали ингредиента" onClose={handleCloseModal}>
                 <IngredientDetails />
               </Modal>
             }
@@ -175,12 +179,7 @@ const RouteComponent = (): React.JSX.Element => {
           <Route
             path="/feed/:number"
             element={
-              <Modal
-                title="Детали заказа"
-                onClose={() => {
-                  void navigate(-1);
-                }}
-              >
+              <Modal title="Детали заказа" onClose={handleCloseModal}>
                 <OrderInfo />
               </Modal>
             }
@@ -189,12 +188,7 @@ const RouteComponent = (): React.JSX.Element => {
             path="/profile/orders/:number"
             element={
               <ProtectedRoute>
-                <Modal
-                  title="Детали заказа"
-                  onClose={() => {
-                    void navigate(-1);
-                  }}
-                >
+                <Modal title="Детали заказа" onClose={handleCloseModal}>
                   <OrderInfo />
                 </Modal>
               </ProtectedRoute>

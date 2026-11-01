@@ -1,3 +1,9 @@
+import {
+  getConstructorItems,
+  getOrderRequest,
+  getOrderModalData,
+  getUser,
+} from '@/services/selectors';
 import { clearConstructor } from '@/services/slices/constructorSlice';
 import { createOrder, clearOrder } from '@/services/slices/orderSlice';
 import { useSelector, useDispatch } from '@/services/store';
@@ -17,12 +23,10 @@ export const BurgerConstructor = (): React.JSX.Element | null => {
     };
   }, [dispatch]);
 
-  const constructorItems = useSelector((state) => state.burgerConstructor);
-
-  const { isLoading: orderRequest, orderData: orderModalData } = useSelector(
-    (state) => state.order
-  );
-  const { user } = useSelector((state) => state.user);
+  const constructorItems = useSelector(getConstructorItems);
+  const orderRequest = useSelector(getOrderRequest);
+  const orderModalData = useSelector(getOrderModalData);
+  const user = useSelector(getUser);
 
   const onOrderClick = (): void => {
     if (!constructorItems.bun || orderRequest) return;

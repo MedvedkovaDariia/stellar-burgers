@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { orderBurgerApi, getOrderByNumberApi } from '../../utils/burger-api';
+import {
+  orderBurgerApi,
+  getOrderByNumberApi,
+  getErrorMessage,
+} from '../../utils/burger-api';
 
 import type { TOrder } from '../../utils/types'; //, type TOrdersData
 
@@ -23,12 +27,12 @@ export const fetchOrderByNumber = createAsyncThunk(
       const data = await getOrderByNumberApi(number);
       return data.orders[0];
     } catch (error: unknown) {
-      return rejectWithValue(error);
+      return rejectWithValue(getErrorMessage(error));
     }
   }
 );
 
-type TOrderState = {
+export type TOrderState = {
   orderNumber: number | null;
   orderData: TOrder | null;
   currentOrder: TOrder | null;
@@ -36,7 +40,7 @@ type TOrderState = {
   error: string | null;
 };
 
-const initialState: TOrderState = {
+export const initialState: TOrderState = {
   orderNumber: null,
   orderData: null,
   currentOrder: null,

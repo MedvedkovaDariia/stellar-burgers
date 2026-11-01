@@ -1,3 +1,4 @@
+import { getIngredients } from '@/services/selectors';
 import { useSelector } from '@/services/store';
 import { OrderCardUI } from '@ui';
 import { memo, useMemo } from 'react';
@@ -13,9 +14,7 @@ export const OrderCard = memo(function OrderCard({
 }: OrderCardProps): React.JSX.Element | null {
   const location = useLocation();
 
-  const ingredients: TIngredient[] = useSelector(
-    (state) => state.ingredients.ingredients
-  );
+  const ingredients: TIngredient[] = useSelector(getIngredients);
 
   const orderInfo = useMemo(() => {
     if (!ingredients.length) return null;

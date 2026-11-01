@@ -1,3 +1,9 @@
+import {
+  getIngredients,
+  getProfileOrder,
+  getFeed,
+  getCurrentOrder,
+} from '@/services/selectors';
 import { fetchOrderByNumber } from '@/services/slices/orderSlice';
 import { useSelector, useDispatch } from '@/services/store';
 import { Preloader, OrderInfoUI } from '@ui';
@@ -10,13 +16,11 @@ export const OrderInfo = (): React.JSX.Element => {
   const dispatch = useDispatch();
   const { number } = useParams<{ number: string }>();
 
-  const { orders: profileOrders } = useSelector((state) => state.profileOrder);
-  const { orders: feedOrders } = useSelector((state) => state.feed);
-  const { currentOrder } = useSelector((state) => state.order);
+  const { orders: profileOrders } = useSelector(getProfileOrder);
+  const { orders: feedOrders } = useSelector(getFeed);
+  const currentOrder = useSelector(getCurrentOrder);
 
-  const ingredients: TIngredient[] = useSelector(
-    (state) => state.ingredients.ingredients
-  );
+  const ingredients: TIngredient[] = useSelector(getIngredients);
 
   const orderData = useMemo(() => {
     const orderFromProfile = profileOrders.find((o) => o.number === Number(number));

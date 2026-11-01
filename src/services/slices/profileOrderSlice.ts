@@ -20,7 +20,7 @@ export const getProfileOrders = createAsyncThunk(
   }
 );
 
-type TProfileOrdersState = {
+export type TProfileOrdersState = {
   orders: TOrder[];
   isLoading: boolean;
   error: string | null;

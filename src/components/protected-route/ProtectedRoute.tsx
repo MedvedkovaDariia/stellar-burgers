@@ -1,3 +1,4 @@
+import { getUser, getUserLoading } from '@/services/selectors';
 import { Navigate, useLocation } from 'react-router-dom';
 
 import { useSelector } from '../../services/store';
@@ -20,7 +21,8 @@ export const ProtectedRoute = ({
   onlyUnAuth = false,
   children,
 }: ProtectedRouteProps): React.JSX.Element => {
-  const { user, isLoading } = useSelector((state) => state.user);
+  const user = useSelector(getUser);
+  const isLoading = useSelector(getUserLoading);
   const location = useLocation();
   const state = location.state as LocationState | null;
 
