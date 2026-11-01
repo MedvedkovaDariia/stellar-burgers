@@ -1,24 +1,57 @@
+import {
+  getConstructorItems,
+  getOrderRequest,
+  getOrderModalData,
+  getUser,
+} from '@/services/selectors';
+import { clearConstructor } from '@/services/slices/constructorSlice';
+import { createOrder, clearOrder } from '@/services/slices/orderSlice';
+import { useSelector, useDispatch } from '@/services/store';
 import { BurgerConstructorUI } from '@ui';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import type { TConstructorIngredient, TConstructorState, TOrder } from '@utils-types';
+import type { TConstructorIngredient } from '@utils-types';
 
 export const BurgerConstructor = (): React.JSX.Element | null => {
-  /** TODO: Взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems: TConstructorState = {
-    bun: null,
-    ingredients: [],
-  };
-  const orderRequest = false;
-  const orderModalData: TOrder | null = null;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect((): (() => void) => {
+    return () => {
+      dispatch(clearOrder());
+    };
+  }, [dispatch]);
+
+  const constructorItems = useSelector(getConstructorItems);
+  const orderRequest = useSelector(getOrderRequest);
+  const orderModalData = useSelector(getOrderModalData);
+  const user = useSelector(getUser);
 
   const onOrderClick = (): void => {
     if (!constructorItems.bun || orderRequest) return;
-    // TODO: Оформить заказ
+    if (!user) {
+      void navigate('/login');
+      return;
+    }
+
+    const ingredientsIds = [
+      constructorItems.bun._id,
+      ...constructorItems.ingredients.map((item) => item._id),
+      constructorItems.bun._id,
+    ];
+
+    void dispatch(createOrder(ingredientsIds))
+      .then((res) => {
+        if (res.meta.requestStatus === 'fulfilled') {
+          dispatch(clearConstructor());
+        }
+      })
+      .catch((err) => console.error(err));
   };
 
   const closeOrderModal = (): void => {
-    // TODO: Закрыть модальное окно и сбросить заказ
+    dispatch(clearOrder());
   };
 
   const price = useMemo(

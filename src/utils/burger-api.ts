@@ -16,7 +16,13 @@ type TServerResponse<T = unknown> = {
  * payload is wrapped in a real Error before rejecting. The original body is
  * kept in `cause` for debugging.
  */
-const toApiError = (payload: unknown): Error => {
+
+export const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) return error.message;
+  return 'Произошла неизвестная ошибка';
+};
+
+export const toApiError = (payload: unknown): Error => {
   const message =
     typeof payload === 'object' &&
     payload !== null &&
