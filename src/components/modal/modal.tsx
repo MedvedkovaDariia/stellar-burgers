@@ -17,6 +17,7 @@ export const Modal = memo(function Modal({
     };
 
     document.addEventListener('keydown', handleEsc);
+
     return (): void => {
       document.removeEventListener('keydown', handleEsc);
     };
