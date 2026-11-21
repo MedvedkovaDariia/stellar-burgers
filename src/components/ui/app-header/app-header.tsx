@@ -14,7 +14,7 @@ export const AppHeaderUI = ({ userName }: TAppHeaderUIProps): React.JSX.Element 
   const location = useLocation();
 
   return (
-    <header className={styles.header}>
+    <header data-testid="header" className={styles.header}>
       <nav className={`${styles.menu} p-4`}>
         <div className={styles.menu_part_left}>
           <NavLink

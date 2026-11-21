@@ -5,5 +5,10 @@
     { "path": "./tsconfig.node.json" },
     { "path": "./tsconfig.test.json" },
     { "path": "./tsconfig.e2e.json" }
-  ]
-}
+  ],
+  "compilerOptions": {
+      "target": "ES2022",
+      "lib": ["ES2022", "DOM", "DOM.Iterable"],
+      // ... остальные настройки
+    }
+  }
