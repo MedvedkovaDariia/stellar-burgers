@@ -38,14 +38,14 @@ const mockIngredient = {
   __v: 0,
 };
 
-describe('Тестирование редьюсера constructorSlice', () => {
-  test('должен вернуть начальное состояние при неизвестном экшене', () => {
+describe('Testing the reducer of constructorSlice', () => {
+  test('must return the initial state when an unknown action is requested', () => {
     const result = constructorReducer(undefined, { type: 'UNKNOWN_ACTION' });
     expect(result).toEqual(initialState);
   });
 
-  describe('Синхронные экшены', () => {
-    test('должен обработать addIngredient (добавление булки)', () => {
+  describe('Synchronous action ', () => {
+    test('must process action addIngredient (adding a bun)', () => {
       const action = addIngredient(mockBun);
       const result = constructorReducer(undefined, action);
 
@@ -53,7 +53,7 @@ describe('Тестирование редьюсера constructorSlice', () => {
       expect(result.ingredients).toHaveLength(0);
     });
 
-    test('должен обработать addIngredient (добавление начинки)', () => {
+    test('must process action addIngredient (adding a filling)', () => {
       const action = addIngredient(mockIngredient);
       const result = constructorReducer(undefined, action);
 
@@ -66,7 +66,7 @@ describe('Тестирование редьюсера constructorSlice', () => {
       expect(result.ingredients[0]).toHaveProperty('id');
     });
 
-    test('должен обработать removeIngredient', () => {
+    test('must process action removeIngredient', () => {
       const stateWithIngredient = {
         bun: null,
         ingredients: [
@@ -80,7 +80,7 @@ describe('Тестирование редьюсера constructorSlice', () => {
       expect(result.ingredients).toHaveLength(0);
     });
 
-    test('должен обработать clearConstructor', () => {
+    test('must process action clearConstructor', () => {
       const stateWithData = {
         bun: { ...mockBun, id: 'bun-id' } as TConstructorIngredient,
         ingredients: [{ ...mockIngredient, id: 'ing-id' }] as TConstructorIngredient[],
@@ -95,7 +95,7 @@ describe('Тестирование редьюсера constructorSlice', () => {
       });
     });
 
-    test('должен обработать moveIngredient', () => {
+    test('must process action moveIngredient', () => {
       const stateWithIngredients = {
         bun: null,
         ingredients: [

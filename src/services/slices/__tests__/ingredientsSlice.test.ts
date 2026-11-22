@@ -20,15 +20,15 @@ const mockIngredients: TIngredient[] = [
   },
 ];
 
-describe('Тестирование редьюсера ingredientsSlice', () => {
-  test('должен вернуть начальное состояние при неизвестном экшене', () => {
+describe('Testing the reducer of', () => {
+  test('must return the initial state when an unknown action is requested', () => {
     const result = ingredientsReducer(undefined, { type: 'UNKNOWN_ACTION' });
     expect(result).toEqual(initialState);
   });
 });
 
-describe('Асинхронный экшен fetchIngredients', () => {
-  test('должен обработать fetchIngredients.pending', () => {
+describe('Async action fetchIngredients', () => {
+  test('must process the request fetchIngredients.pending', () => {
     const action = { type: fetchIngredients.pending.type };
     const result = ingredientsReducer(initialState, action);
 
@@ -36,7 +36,7 @@ describe('Асинхронный экшен fetchIngredients', () => {
     expect(result.ingredientsError).toBeNull();
   });
 
-  test('должен обработать fetchIngredients.fulfilled', () => {
+  test('must process the request fetchIngredients.fulfilled', () => {
     const action = {
       type: fetchIngredients.fulfilled.type,
       payload: mockIngredients,
@@ -48,7 +48,7 @@ describe('Асинхронный экшен fetchIngredients', () => {
     expect(result.ingredientsError).toBeNull();
   });
 
-  test('должен обработать fetchIngredients.rejected', () => {
+  test('must process the request fetchIngredients.rejected', () => {
     const errorPayload = 'Ошибка загрузки ингредиентов';
     const action = {
       type: fetchIngredients.rejected.type,
