@@ -1,10 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('add ingredients to constructor works correctly', () => {
-    test.beforeEach(async ({ page }) => {
-       await page.routeFromHAR('./tests/hars/all-api.har', {
-        url: '**/api/**',
+test.describe('Loading ingredients list', () => {
+    test.beforeEach(async ({ context,page }) => {
+
+      await page.routeFromHAR('./tests/hars/ingredients.har', {
+        url: '**/api/ingredients',
         update: false,
+        notFound: 'abort',
       });
        await page.goto('/');
     });
@@ -13,15 +15,16 @@ test.describe('add ingredients to constructor works correctly', () => {
       await expect(page.getByTestId('header')).toBeVisible();
       await expect(page.getByTestId('burger-ingredients')).toBeVisible();
       await expect(page.getByText('Краторная булка N-200i').first()).toBeVisible();
+      await page.close();
   });
 });
 
 test.describe('The burger constructor works correctly',() => {
   test.beforeEach(async ({ page }) => {
-      await page.routeFromHAR('./tests/hars/all-api.har', {
-        url: '**/api/**',
+      await page.routeFromHAR('./tests/hars/ingredients.har', {
+        url: '**/api/ingredients',
       });
-      page.goto('/');
+      await page.goto('/');
   });
 
   test('Adding ingredients to the builder', async ({ page }) => {
@@ -38,7 +41,6 @@ test.describe('The burger constructor works correctly',() => {
       await ingredientFilling.getByRole('button',{name: 'Добавить'}).click();
       await expect(constructorZone.getByText('Говяжий метеорит (отбивная)')).toBeVisible();
 
-
       await expect(constructorZone.getByText('Соус Spicy-X')).toBeHidden();
       await ingredientSauce.getByRole('button',{name: 'Добавить'}).click();
       await expect(constructorZone.getByText('Соус Spicy-X')).toBeVisible();
@@ -47,10 +49,10 @@ test.describe('The burger constructor works correctly',() => {
 
 test.describe('The modal window works correctly', () => {
   test.beforeEach(async ({ page }) => {
-      await page.routeFromHAR('./tests/hars/all-api.har', {
-      url: '**/api/**',
+      await page.routeFromHAR('./tests/hars/ingredients.har', {
+      url: '**/api/ingredients',
     });
-     page.goto('/');
+      await page.goto('/');
   });
 
   test('Opening and closing the ingredient modal window using the Escape key', async ({ page }) => {

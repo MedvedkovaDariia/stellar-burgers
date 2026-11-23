@@ -72,7 +72,7 @@ const AppContent = ({
 
   if (error) {
     return (
-      <p data-testid="error" className={`${styles.message} text text_type_main-medium`}>
+      <p className={`${styles.message} text text_type_main-medium`}>
         Не удалось загрузить ингредиенты
         {error ? `: ${error}` : '.'}
       </p>

@@ -39,13 +39,13 @@ const mockIngredient = {
 };
 
 describe('Testing the reducer of constructorSlice', () => {
-  test('must return the initial state when an unknown action is requested', () => {
+  test('Must return the initial state when an unknown action is requested', () => {
     const result = constructorReducer(undefined, { type: 'UNKNOWN_ACTION' });
     expect(result).toEqual(initialState);
   });
 
-  describe('Synchronous action ', () => {
-    test('must process action addIngredient (adding a bun)', () => {
+  describe('Testing synchronous action', () => {
+    test('Must process action addIngredient (adding a bun)', () => {
       const action = addIngredient(mockBun);
       const result = constructorReducer(undefined, action);
 
@@ -53,7 +53,7 @@ describe('Testing the reducer of constructorSlice', () => {
       expect(result.ingredients).toHaveLength(0);
     });
 
-    test('must process action addIngredient (adding a filling)', () => {
+    test('Must process action addIngredient (adding a filling)', () => {
       const action = addIngredient(mockIngredient);
       const result = constructorReducer(undefined, action);
 
@@ -62,25 +62,31 @@ describe('Testing the reducer of constructorSlice', () => {
       expect(result.ingredients[0]).toEqual(
         expect.objectContaining({ name: mockIngredient.name })
       );
-      // Проверяем, что добавился уникальный id
       expect(result.ingredients[0]).toHaveProperty('id');
     });
 
-    test('must process action removeIngredient', () => {
+    test('Must process action removeIngredient', () => {
       const stateWithIngredient = {
         bun: null,
         ingredients: [
           { ...mockIngredient, id: 'unique-uuid-123' },
+          { ...mockIngredient, id: 'unique-uuid-124' },
         ] as TConstructorIngredient[],
       };
 
+      const countIngredients = stateWithIngredient.ingredients.length;
       const action = removeIngredient('unique-uuid-123');
       const result = constructorReducer(stateWithIngredient, action);
-
-      expect(result.ingredients).toHaveLength(0);
+      expect(result.ingredients).toHaveLength(countIngredients - 1);
+      expect(result.ingredients).not.toContainEqual(
+        expect.objectContaining({ id: 'unique-uuid-123' })
+      );
+      expect(result.ingredients).toContainEqual(
+        expect.objectContaining({ id: 'unique-uuid-124' })
+      );
     });
 
-    test('must process action clearConstructor', () => {
+    test('Must process action clearConstructor', () => {
       const stateWithData = {
         bun: { ...mockBun, id: 'bun-id' } as TConstructorIngredient,
         ingredients: [{ ...mockIngredient, id: 'ing-id' }] as TConstructorIngredient[],
@@ -95,7 +101,7 @@ describe('Testing the reducer of constructorSlice', () => {
       });
     });
 
-    test('must process action moveIngredient', () => {
+    test('Must process action moveIngredient', () => {
       const stateWithIngredients = {
         bun: null,
         ingredients: [

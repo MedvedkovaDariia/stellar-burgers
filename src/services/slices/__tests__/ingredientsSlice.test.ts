@@ -18,15 +18,15 @@ const mockIngredients: TIngredient[] = [
   },
 ];
 
-describe('Testing the reducer of', () => {
-  test('must return the initial state when an unknown action is requested', () => {
+describe('Testing the reducer of ingredientsSlices', () => {
+  test('Must return the initial state when an unknown action is requested', () => {
     const result = ingredientsReducer(undefined, { type: 'UNKNOWN_ACTION' });
     expect(result).toEqual(initialState);
   });
 });
 
 describe('Async action fetchIngredients', () => {
-  test('must process the request fetchIngredients.pending', () => {
+  test('Must process the request fetchIngredients.pending', () => {
     const action = fetchIngredients.pending('requestId');
     const result = ingredientsReducer(initialState, action);
 
@@ -34,7 +34,7 @@ describe('Async action fetchIngredients', () => {
     expect(result.ingredientsError).toBeNull();
   });
 
-  test('must process the request fetchIngredients.fulfilled', () => {
+  test('Must process the request fetchIngredients.fulfilled', () => {
     const loadingState = { ...initialState, isIngredientsLoading: true };
     const action = fetchIngredients.fulfilled(mockIngredients, 'requestId');
     const result = ingredientsReducer(loadingState, action);
@@ -44,7 +44,7 @@ describe('Async action fetchIngredients', () => {
     expect(result.ingredientsError).toBeNull();
   });
 
-  test('must process the request fetchIngredients.rejected', () => {
+  test('Must process the request fetchIngredients.rejected', () => {
     const loadingState = { ...initialState, isIngredientsLoading: true };
     const errorPayload = new Error('Ошибка загрузки ингредиентов');
     const action = fetchIngredients.rejected(null, 'requestId', undefined, errorPayload);
