@@ -1,6 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { nanoid } from '@reduxjs/toolkit';
-// import { v4 as uuidv4 } from 'uuid';
 
 import type {
   TConstructorState,
@@ -26,7 +25,6 @@ const constructorSlice = createSlice({
         }
       },
       prepare: (ingredient: TIngredient) => ({
-        // payload: { ...ingredient, id: uuidv4() } as TConstructorIngredient,
         payload: { ...ingredient, id: nanoid() } as TConstructorIngredient,
       }),
     },

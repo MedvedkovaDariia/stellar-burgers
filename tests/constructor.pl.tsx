@@ -6,12 +6,12 @@ test.describe('add ingredients to constructor works correctly', () => {
         url: '**/api/**',
         update: false,
       });
-       page.goto('/');
+       await page.goto('/');
     });
 
     test('Getting ingredients from the ingredients.har file', async ({ page }) => {
       await expect(page.getByTestId('header')).toBeVisible();
-      await expect(page.getByTestId('burger-ingredients')).toBeVisible({ timeout: 10000 });
+      await expect(page.getByTestId('burger-ingredients')).toBeVisible();
       await expect(page.getByText('Краторная булка N-200i').first()).toBeVisible();
   });
 });

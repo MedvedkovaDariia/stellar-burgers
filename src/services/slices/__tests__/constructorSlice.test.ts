@@ -6,7 +6,7 @@ import constructorReducer, {
   initialState,
 } from '../constructorSlice';
 
-import type { TConstructorIngredient } from '../../../utils/types'; // Подгони путь под себя
+import type { TConstructorIngredient } from '../../../utils/types';
 
 const mockBun = {
   _id: '1',

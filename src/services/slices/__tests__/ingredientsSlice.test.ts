@@ -1,5 +1,3 @@
-import { expect, test } from '@jest/globals';
-
 import ingredientsReducer, { fetchIngredients, initialState } from '../ingredientsSlice';
 
 import type { TIngredient } from '../../../utils/types';
@@ -29,7 +27,7 @@ describe('Testing the reducer of', () => {
 
 describe('Async action fetchIngredients', () => {
   test('must process the request fetchIngredients.pending', () => {
-    const action = { type: fetchIngredients.pending.type };
+    const action = fetchIngredients.pending('requestId');
     const result = ingredientsReducer(initialState, action);
 
     expect(result.isIngredientsLoading).toBe(true);
@@ -37,11 +35,9 @@ describe('Async action fetchIngredients', () => {
   });
 
   test('must process the request fetchIngredients.fulfilled', () => {
-    const action = {
-      type: fetchIngredients.fulfilled.type,
-      payload: mockIngredients,
-    };
-    const result = ingredientsReducer(initialState, action);
+    const loadingState = { ...initialState, isIngredientsLoading: true };
+    const action = fetchIngredients.fulfilled(mockIngredients, 'requestId');
+    const result = ingredientsReducer(loadingState, action);
 
     expect(result.isIngredientsLoading).toBe(false);
     expect(result.ingredients).toEqual(mockIngredients);
@@ -49,15 +45,12 @@ describe('Async action fetchIngredients', () => {
   });
 
   test('must process the request fetchIngredients.rejected', () => {
-    const errorPayload = 'Ошибка загрузки ингредиентов';
-    const action = {
-      type: fetchIngredients.rejected.type,
-      error: errorPayload,
-    };
-    const result = ingredientsReducer(initialState, action);
+    const loadingState = { ...initialState, isIngredientsLoading: true };
+    const errorPayload = new Error('Ошибка загрузки ингредиентов');
+    const action = fetchIngredients.rejected(null, 'requestId', undefined, errorPayload);
+    const result = ingredientsReducer(loadingState, action);
 
     expect(result.isIngredientsLoading).toBe(false);
-    // В твоем коде: state.ingredientsError = action.error as string;
     expect(result.ingredientsError).toBe(errorPayload);
   });
 });
