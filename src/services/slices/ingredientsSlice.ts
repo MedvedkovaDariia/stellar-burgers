@@ -10,7 +10,7 @@ type IngredientsState = {
   ingredientsError: string | null;
 };
 
-const initialState: IngredientsState = {
+export const initialState: IngredientsState = {
   ingredients: [],
   isIngredientsLoading: false,
   ingredientsError: null,
@@ -23,7 +23,8 @@ export const fetchIngredients = createAsyncThunk(
       const data = await getIngredientsApi();
       return data;
     } catch (error: unknown) {
-      return rejectWithValue(error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -48,7 +49,7 @@ const ingredientsSlice = createSlice({
       )
       .addCase(fetchIngredients.rejected, (state, action) => {
         state.isIngredientsLoading = false;
-        state.ingredientsError = action.error as string;
+        state.ingredientsError = action.payload as string;
       });
   },
 });

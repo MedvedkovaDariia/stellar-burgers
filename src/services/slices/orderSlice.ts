@@ -84,7 +84,7 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.currentOrder = action.payload; // Сохраняем найденный заказ
+        state.currentOrder = action.payload;
       })
       .addCase(fetchOrderByNumber.rejected, (state, action) => {
         state.isLoading = false;
