@@ -1,8 +1,8 @@
 import {test, expect} from '@playwright/test';
 
 
-test.describe('make order',() =>{
-  test('Make Order', async ({ context,page }) => {
+test.describe('Make order',() =>{
+  test('Make order by authorized user', async ({ context,page }) => {
 
     await context.addCookies([
       {
@@ -17,27 +17,25 @@ test.describe('make order',() =>{
       window.localStorage.setItem('refreshToken', 'fake-refresh-token-456');
     });
 
-    await page.route('**api/auth/user',async(route)=>{
-      await route.fulfill({
-        status:200,
-        contentType:'application/json',
-        body: JSON.stringify({"success":true,"user":{"email":"test@burger.com","name":"TestUser"}}),
-      });
-    });
-
     await page.routeFromHAR('./tests/hars/orders.har', {
        url: '**/api/orders',
        update: false,
+       notFound: 'abort',
     });
     
-    await page.goto('/profile');
-    await page.goto('/');
-
     await page.routeFromHAR('./tests/hars/ingredients.har', {
       url: '**/api/ingredients',
       update: false,
+      notFound: 'abort',
     });
 
+    await page.routeFromHAR('./tests/hars/user.har', {
+      url: '**/api/auth/user',
+      update: false,
+      notFound: 'abort',
+    });
+
+    await page.goto('/');     
     await expect(page.getByTestId('burger-ingredients')).toBeVisible({});
   
     const ingredientBun = page.locator('li').filter({ hasText: 'Краторная булка N-200i' }).first();
@@ -63,7 +61,7 @@ test.describe('make order',() =>{
     await page.getByRole('button', { name: 'Оформить заказ' }).click();
     await expect(modal).toBeVisible();
   
-    await expect(modal.getByText('2219')).toBeVisible();
+    await expect(modal.getByText('8947')).toBeVisible();
 
     await page.mouse.click(10, 10);
     await expect(modal).toBeHidden();
