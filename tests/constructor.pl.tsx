@@ -1,56 +1,52 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+async function setupIngredientsMock(page: Page) {
+  await page.routeFromHAR('./tests/hars/ingredients.har', {
+    url: '**/api/ingredients',
+    update: false,
+    notFound: 'abort',
+  });
+  await page.goto('/');
+}
+
+test.beforeEach(async ({ page }) => {
+  await setupIngredientsMock(page);
+});
 
 test.describe('Loading ingredients list', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.routeFromHAR('./tests/hars/ingredients.har', {
-      url: '**/api/ingredients',
-      update: false,
-      notFound: 'abort',
-    });
-    await page.goto('/');
-  });
-
   test('Getting ingredients from the ingredients.har file', async ({ page }) => {
     await expect(page.getByTestId('header')).toBeVisible();
     await expect(page.getByTestId('burger-ingredients')).toBeVisible();
     await expect(page.getByText('Краторная булка N-200i').first()).toBeVisible();
-    await page.close();
   });
 });
 
 test.describe('The burger constructor works correctly', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.routeFromHAR('./tests/hars/ingredients.har', {
-      url: '**/api/ingredients',
-    });
-    await page.goto('/');
-  });
-
   test('Adding ingredients to the builder', async ({ page }) => {
     const ingredientBun = page
-      .locator('li')
+      .getByTestId('burger-ingredient')
       .filter({ hasText: 'Краторная булка N-200i' })
       .first();
     const ingredientFilling = page
-      .locator('li')
+      .getByTestId('burger-ingredient')
       .filter({ hasText: 'Говяжий метеорит (отбивная)' })
       .first();
     const ingredientSauce = page
-      .locator('li')
+      .getByTestId('burger-ingredient')
       .filter({ hasText: 'Соус Spicy-X' })
       .first();
     const constructorZone = page.getByTestId('constructor');
 
-    await expect(
-      constructorZone.getByText(/Краторная булка N-200i/).first()
-    ).toBeHidden();
-    await ingredientBun.getByRole('button', { name: 'Добавить' }).click();
+    await expect(constructorZone.getByText(/Выберите булки/).first()).toBeVisible();
+    await ingredientBun.getByRole('button', { name: /Добавить/ }).click();
+    await expect(constructorZone.getByText(/Выберите булки/).first()).toBeHidden();
     await expect(
       constructorZone.getByText(/Краторная булка N-200i/).first()
     ).toBeVisible();
 
-    await expect(constructorZone.getByText('Говяжий метеорит (отбивная)')).toBeHidden();
+    await expect(constructorZone.getByText(/Выберите начинку/)).toBeVisible();
     await ingredientFilling.getByRole('button', { name: 'Добавить' }).click();
+    await expect(constructorZone.getByText(/Выберите начинку/).first()).toBeHidden();
     await expect(constructorZone.getByText('Говяжий метеорит (отбивная)')).toBeVisible();
 
     await expect(constructorZone.getByText('Соус Spicy-X')).toBeHidden();
@@ -60,20 +56,17 @@ test.describe('The burger constructor works correctly', () => {
 });
 
 test.describe('The modal window works correctly', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.routeFromHAR('./tests/hars/ingredients.har', {
-      url: '**/api/ingredients',
-    });
-    await page.goto('/');
-  });
-
   test('Opening and closing the ingredient modal window using the Escape key', async ({
     page,
   }) => {
     const ingredientName = 'Краторная булка N-200i';
     const modal = page.getByTestId('modal');
     await expect(modal).toBeHidden();
-    await page.locator('li').filter({ hasText: ingredientName }).first().click();
+    await page
+      .getByTestId('burger-ingredient')
+      .filter({ hasText: ingredientName })
+      .first()
+      .click();
 
     await expect(modal).toBeVisible();
     await expect(modal.getByText(ingredientName)).toBeVisible();
@@ -88,7 +81,11 @@ test.describe('The modal window works correctly', () => {
     const ingredientName = 'Краторная булка N-200i';
     const modal = page.getByTestId('modal');
     await expect(modal).toBeHidden();
-    await page.locator('li').filter({ hasText: ingredientName }).first().click();
+    await page
+      .getByTestId('burger-ingredient')
+      .filter({ hasText: ingredientName })
+      .first()
+      .click();
 
     await expect(modal).toBeVisible();
     await expect(modal.getByText(ingredientName)).toBeVisible();
@@ -103,12 +100,16 @@ test.describe('The modal window works correctly', () => {
     const ingredientName = 'Краторная булка N-200i';
     const modal = page.getByTestId('modal');
     await expect(modal).toBeHidden();
-    await page.locator('li').filter({ hasText: ingredientName }).first().click();
+    await page
+      .getByTestId('burger-ingredient')
+      .filter({ hasText: ingredientName })
+      .first()
+      .click();
 
     await expect(modal).toBeVisible();
     await expect(modal.getByText(ingredientName)).toBeVisible();
 
-    await page.mouse.click(10, 10);
+    await page.getByTestId('modal-overlay').click({ position: { x: 5, y: 5 } });
     await expect(modal).toBeHidden();
   });
 });
